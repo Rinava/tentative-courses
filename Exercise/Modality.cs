@@ -20,9 +20,9 @@ namespace Exercise.Models
             }
             set
             {
-                if (_modality == _Modality.Individual || _modality == _Modality.Group)
+                if (_modality.Equals(_Modality.Individual) || _modality.Equals(_Modality.Group))
                 {
-                    CurrentModality = _modality;
+                    _modality = value;
                 }
                 else
                 {

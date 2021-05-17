@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Exercise.Models.Day;
+using static Exercise.Models.Modality;
 
 namespace Exercise.Models
 {
@@ -13,14 +15,18 @@ namespace Exercise.Models
         public Modality CurrentModality { get; }
         public int DurationMinutes { get; }
 
+        public Course()
+        {
+        }
+
         public Course(List<Student> _students, Teacher _teacher, Level _currentLevel, Modality _currentModality, int _durationMinutes)
         {
-            List < Schedule > posibleSchedules= FindScheduleIntersection(_students, _teacher, _durationMinutes);
+            List<Schedule> posibleSchedules = FindScheduleIntersection(_students, _teacher, _durationMinutes);
             if (!posibleSchedules.Count.Equals(0))
             {
-                Random rnd = new Random();
+                Random rnd = new ();
                 int randomIndex = rnd.Next(posibleSchedules.Count);
-                if (_currentModality.Equals(1) && _students.Count == 1 && _students.First().CurrentModality.Equals(1))
+                if (ValidIndividualModality(_students, _currentModality))
                 {
                     Students = _students;
                     Teacher = _teacher;
@@ -28,7 +34,7 @@ namespace Exercise.Models
                     CurrentSchedule = posibleSchedules.ElementAt(randomIndex);
                     CurrentModality = _currentModality;
                 }
-                else if (_currentModality.Equals(2) && _students.Count <= 6 && _students.All(student => student.CurrentModality.Equals(2)) && _students.All(student => student.CurrentLevel.Equals(_currentLevel)))
+                else if (ValidGroupModality(_students, _currentLevel, _currentModality))
                 {
                     Students = _students;
                     Teacher = _teacher;
@@ -43,10 +49,11 @@ namespace Exercise.Models
             }
         }
 
-        public List<Schedule> FindScheduleIntersection(List<Student> _students, Teacher _teacher, int _durationMinutes)
+        public static List<Schedule> FindScheduleIntersection(List<Student> _students, Teacher _teacher, int _durationMinutes)
         {
             List<Schedule> scheduleIntersection = null;
-            foreach (string day in Enum.GetNames(typeof(Day._CurrentDay)))
+
+            foreach (_CurrentDay day in Enum.GetValues<_CurrentDay>())
             {
                 if (_students.All(student => student.AvariableSchedule.Days.All(student => student.CurrentDay.Equals(day)) && _teacher.AvariableSchedule.Days.All(teacher => teacher.CurrentDay.Equals(day))))
                 {
@@ -72,8 +79,8 @@ namespace Exercise.Models
                         courseEndTime = new TimeSpan(Math.Min(courseEndTime.Ticks, teacherTime.EndTime.Ticks));
                         if ((courseEndTime.Minutes - courseStartTime.Minutes) >= _durationMinutes)
                         {
-                            Day currentDay = new Day(day, courseStartTime, courseEndTime);
-                            Schedule schedule = new Schedule();
+                            Day currentDay = new(day, courseStartTime, courseEndTime);
+                            Schedule schedule = new();
                             schedule.Days.Add(currentDay);
                             scheduleIntersection.Add(schedule);
                         }
@@ -84,6 +91,30 @@ namespace Exercise.Models
                 }
             }
             return scheduleIntersection;
+        }
+
+        public static Boolean ValidIndividualModality(List<Student> _students, Modality _currentModality)
+        {
+            if (_currentModality.CurrentModality.Equals(_Modality.Individual) && _students.Count == 1 && _students.First().CurrentModality.CurrentModality.Equals(_Modality.Individual))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static Boolean ValidGroupModality(List<Student> _students, Level _currentLevel, Modality _currentModality)
+        {
+            if (_currentModality.CurrentModality.Equals(_Modality.Group) && _students.Count <= 6 && _students.All(student => student.CurrentModality.CurrentModality.Equals(_Modality.Group)) && _students.All(student => student.CurrentLevel.CurrentLevel.Equals(_currentLevel.CurrentLevel)))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

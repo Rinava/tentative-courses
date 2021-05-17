@@ -23,14 +23,20 @@ namespace Exercise.Models
             }
             set
             {
-                if (_level == _Level.Beginner || _level == _Level.Pre_intermediate || _level == _Level.Intermediate || _level == _Level.Upper_Intermediate || _level == _Level.Advanced)
-                {
-                    CurrentLevel = _level;
-                }
-                else
-                {
-                    throw new ArgumentException("Wrong parameter value", nameof(_level));
-                }
+                if (ValidLevel(_level)) { _level = value; }
+                else { throw new ArgumentException("Wrong parameter value", nameof(_level)); }
+            }
+        }
+
+        public static Boolean ValidLevel(_Level _level)
+        {
+            if (_level == _Level.Beginner || _level == _Level.Pre_intermediate || _level == _Level.Intermediate || _level == _Level.Upper_Intermediate || _level == _Level.Advanced)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

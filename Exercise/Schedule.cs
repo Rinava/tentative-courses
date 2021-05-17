@@ -9,5 +9,10 @@ namespace Exercise.Models
         public Schedule()
         {
         }
+
+        public Schedule(List<Day> _days)
+        {
+            Days = _days;
+        }
     }
 }

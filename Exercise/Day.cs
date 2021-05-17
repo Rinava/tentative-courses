@@ -18,19 +18,31 @@ namespace Exercise.Models
         public TimeSpan StartTime { get; }
         public TimeSpan EndTime { get; }
 
-        public Day(string day, TimeSpan _startTime, TimeSpan _endTime)
+        public Day()
         {
-            CurrentDay=(_CurrentDay)Enum.Parse(typeof(_CurrentDay), day);
-            if(_startTime.Hours>=9 && _endTime.Hours<= 19)
+        }
+
+        public Day(_CurrentDay day, TimeSpan _startTime, TimeSpan _endTime)
+        {
+            if (ValidTimeInterval(_startTime, _endTime))
             {
+                CurrentDay = day;
                 StartTime = _startTime;
                 EndTime = _endTime;
             }
+            else { throw new ArgumentException("Wrong parameter value  " + nameof(_startTime) + " or " + nameof(_endTime)); }
+        }
+
+        public static Boolean ValidTimeInterval(TimeSpan _startTime, TimeSpan _endTime)
+        {
+            if (_startTime.Hours >= 9 && _endTime.Hours <= 19 && _startTime <= _endTime)
+            {
+                return true;
+            }
             else
             {
-                throw new ArgumentException("Wrong parameter value  " + nameof(_startTime) +" or " + nameof(_endTime));
+                return false;
             }
-
         }
     }
 }
