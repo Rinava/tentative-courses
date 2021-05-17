@@ -8,6 +8,7 @@ namespace Exercise.Models
 
         public Schedule()
         {
+            Days = new();
         }
 
         public Schedule(List<Day> _days)

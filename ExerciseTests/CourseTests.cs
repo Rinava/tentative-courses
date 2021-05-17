@@ -53,9 +53,9 @@ namespace Exercise.Tests
             students.Add(student2);
 
             //act
-            List<Schedule> result = Course.FindScheduleIntersection(students, teacher, durationMinutes);
+             List<Schedule> result = Course.FindScheduleIntersection(students, teacher, durationMinutes);
             //assert
-            Assert.IsFalse(result.Count.Equals(0));
+            Assert.IsFalse(result.Count==0);
         }
 
         [TestMethod()]

@@ -51,19 +51,19 @@ namespace Exercise.Models
 
         public static List<Schedule> FindScheduleIntersection(List<Student> _students, Teacher _teacher, int _durationMinutes)
         {
-            List<Schedule> scheduleIntersection = null;
+            List<Schedule> scheduleIntersection = new();
 
             foreach (_CurrentDay day in Enum.GetValues<_CurrentDay>())
             {
-                if (_students.All(student => student.AvariableSchedule.Days.All(student => student.CurrentDay.Equals(day)) && _teacher.AvariableSchedule.Days.All(teacher => teacher.CurrentDay.Equals(day))))
+                if (_students.All(student => student.AvariableSchedule.Days.Any(_day => _day.CurrentDay.Equals(day))) &&  _teacher.AvariableSchedule.Days.Any(_day => _day.CurrentDay.Equals(day)))
                 {
                     TimeSpan courseStartTime = TimeSpan.Zero;
                     TimeSpan courseEndTime = TimeSpan.Zero;
-                    Day teacherTime = _teacher.AvariableSchedule.Days.Find(_day => _day.Equals(day));
-                    for (int i = 0; i < _students.Count; i++)
+                    Day teacherTime = _teacher.AvariableSchedule.Days.Find(_day => _day.CurrentDay.Equals(day));
+                    for (int i = 0; i < _students.Count - 1 ; i++)
                     {
-                        Day studentTime1 = _students.ElementAt(i).AvariableSchedule.Days.Find(_day => _day.Equals(day));
-                        Day studentTime2 = _students.ElementAt(i + 1).AvariableSchedule.Days.Find(_day => _day.Equals(day));
+                        Day studentTime1 = _students.ElementAt(i).AvariableSchedule.Days.Find(_day => _day.CurrentDay.Equals(day));
+                        Day studentTime2 = _students.ElementAt(i + 1).AvariableSchedule.Days.Find(_day => _day.CurrentDay.Equals(day));
                         courseStartTime = studentTime1.StartTime;
                         courseEndTime = studentTime1.EndTime;
 
@@ -77,7 +77,7 @@ namespace Exercise.Models
                     {
                         courseStartTime = new TimeSpan(Math.Max(courseStartTime.Ticks, teacherTime.StartTime.Ticks));
                         courseEndTime = new TimeSpan(Math.Min(courseEndTime.Ticks, teacherTime.EndTime.Ticks));
-                        if ((courseEndTime.Minutes - courseStartTime.Minutes) >= _durationMinutes)
+                        if ((courseEndTime.TotalMinutes - courseStartTime.TotalMinutes) >= _durationMinutes)
                         {
                             Day currentDay = new(day, courseStartTime, courseEndTime);
                             Schedule schedule = new();
