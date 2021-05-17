@@ -57,7 +57,52 @@ namespace Exercise.Tests
             //assert
             Assert.IsFalse(result.Count==0);
         }
+        [TestMethod()]
+        public void NotFoundIntersectionSchedules()
+        {
+            //arrange
 
+            int durationMinutes = 60;
+            //Teacher
+            List<Day> daysTeacher = new();
+            daysTeacher.Add(new Day(_CurrentDay.Monday, new TimeSpan(9, 0, 0), new TimeSpan(10, 0, 0)));
+            daysTeacher.Add(new Day(_CurrentDay.Thursday, new TimeSpan(11, 0, 0), new TimeSpan(12, 0, 0)));
+
+            Schedule scheduleTeacher = new(daysTeacher);
+            Teacher teacher = new("1", "Susana", "Gimenez", scheduleTeacher, "1");
+
+            //Students
+            List<Day> daysStudent1 = new();
+            daysStudent1.Add(new Day(_CurrentDay.Monday, new TimeSpan(13, 0, 0), new TimeSpan(14, 0, 0)));
+            daysStudent1.Add(new Day(_CurrentDay.Thursday, new TimeSpan(15, 0, 0), new TimeSpan(16, 0, 0)));
+
+            Schedule scheduleStudent1 = new(daysStudent1);
+            Level levelStudent1 = new();
+            levelStudent1.CurrentLevel = _Level.Beginner;
+            Modality modalityStudent1 = new();
+            modalityStudent1.CurrentModality = _Modality.Group;
+            Student student1 = new("2", "José", "Neón", scheduleStudent1, "1", levelStudent1, modalityStudent1);
+
+            List<Day> daysStudent2 = new();
+            daysStudent2.Add(new Day(_CurrentDay.Monday, new TimeSpan(17, 0, 0), new TimeSpan(18, 0, 0)));
+            daysStudent2.Add(new Day(_CurrentDay.Thursday, new TimeSpan(9, 0, 0), new TimeSpan(10, 0, 0)));
+
+            Schedule scheduleStudent2 = new(daysStudent2);
+            Level levelStudent2 = new();
+            levelStudent2.CurrentLevel = _Level.Beginner;
+            Modality modalityStudent2 = new();
+            modalityStudent2.CurrentModality = _Modality.Group;
+            Student student2 = new("3", "Mariana", "Leopaldo", scheduleStudent2, "2", levelStudent2, modalityStudent2);
+
+            List<Student> students = new();
+            students.Add(student1);
+            students.Add(student2);
+
+            //act
+            List<Schedule> result = Course.FindScheduleIntersection(students, teacher, durationMinutes);
+            //assert
+            Assert.IsTrue(result.Count == 0);
+        }
         [TestMethod()]
         public void ValidIndividualModality()
         {
